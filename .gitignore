@@ -248,3 +248,7 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+KSPSBC.v12.suo
+KSPSBC.zip
+KSPSBC.dll
+*.suo
