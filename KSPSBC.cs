@@ -19,10 +19,10 @@ using System.Windows.Forms;
 
 namespace SBC {
 	public class DynamicClass	{
-        // Modify these values to your liking
-        string kspPath = @"D:\emulators\KSPSBC\Kerbal Space Program";
-        //string kspPath = @"C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program";
+        // REQUIRED: Set this to your KSP installation path!
+        string kspPath = @"C:\Program Files (x86)\Steam\steamapps\common\Kerbal Space Program";
 
+        // Modify these values to your liking
         const bool warnOnMissingStateFile = true;
         const bool getDeadzonesFromSettingsFile = true;
         const bool enableStageLockWarning = true;
