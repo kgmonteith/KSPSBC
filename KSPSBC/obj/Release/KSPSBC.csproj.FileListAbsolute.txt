@@ -1,0 +1,3 @@
+D:\emulators\KSPSBC\Output\Plugins\KSPSBC.dll
+D:\emulators\KSPSBC\KSPSBC\obj\Release\KSPSBC.dll
+D:\emulators\KSPSBC\KSPSBC\obj\Release\KSPSBC.csprojResolveAssemblyReference.cache
