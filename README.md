@@ -4,6 +4,6 @@ Steel Battalion controller mod for Kerbal Space Program
 See the KSPSBC wiki for detailed installation and usage instructions:
 https://github.com/kgmonteith/KSPSBC/wiki
 
-Just a taste... (click for video)
+Here's a demo video, click to watch:
 
-[![KSPSBC: Launch and abort](http://img.youtube.com/vi/I1qws-vrwKc/0.jpg)](http://www.youtube.com/watch?v=I1qws-vrwKc)
+[![KSPSBC demo](http://img.youtube.com/vi/xE0aCaSeuII/0.jpg)](https://www.youtube.com/watch?v=xE0aCaSeuII)
