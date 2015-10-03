@@ -43,7 +43,7 @@ namespace SBC {
          */
 
 
-        // Common button bindings, rearrange at will
+        // Common switch bindings, rearrange at will
         public Dictionary<string, ButtonEnum> bindings = new Dictionary<string, ButtonEnum>
         {
             {"steeringLock", ButtonEnum.ToggleFuelFlowRate},
@@ -267,74 +267,83 @@ namespace SBC {
         static List<FlashingLight> flashingLights = new List<FlashingLight>();
 
         // Unthreaded flashing light class, requires polling to update state
+        // Now supports multi-level flashing lights! Give it a list of <intensity, duration> tuples
+        // Check the sasLight initialization in Initiliaze() for an example.
         public class FlashingLight
         {
             public ControllerLEDEnum light;
             public ButtonEnum button;
-            public int lowDuration;
-            public int highDuration;
             public int iterations;
             public int lowLevel;
             public int highLevel;
+            public List<Tuple<int, int>> lightStates;  // index 0 is lowest state -- tuple order: <intensity, duration>
 
             int duration;
-            bool lightLevel = false; // false = low, true = high
+            int lightLevel = 0; // index of lightState; 0 == lowest
+            public FlashingLight(ButtonEnum b, List<Tuple<int, int>> ls, int i)
+            {
+                this.light = controller.GetLightForButton(b);
+                this.button = b;
+                this.lightStates = ls;
+                this.iterations = i;
+
+                this.duration = this.lightStates[0].Item2;
+                controller.SetLEDState(this.light, this.lightStates[0].Item1);
+            }
+
             public FlashingLight(ButtonEnum b, int ll, int ld, int hl, int hd, int i)
             {
                 this.light = controller.GetLightForButton(b);
                 this.button = b;
-                this.lowLevel = ll;
-                this.lowDuration = ld;
-                this.highLevel = hl;
-                this.highDuration = hd;
+                this.lightStates = new List<Tuple<int, int>>() {
+                    new Tuple<int, int>(ll, ld),
+                    new Tuple<int, int>(hl, hd)
+                };
                 this.iterations = i;
 
-                this.duration = lowDuration;
-                controller.SetLEDState(this.light, this.lowLevel);
+                this.duration = this.lightStates[0].Item2;
+                controller.SetLEDState(this.light, this.lightStates[0].Item1);
             }
-            
-            public bool poll(int elapsed) {
+
+            public bool poll(int elapsed)
+            {
                 this.duration -= elapsed;
                 if (this.duration <= 0)
                 {
-                    if (this.iterations > 0 && this.lightLevel)
+                    if (this.iterations > 0 && this.lightLevel == this.lightStates.Count - 1)
                     {
                         --this.iterations;
                     }
                     else if (this.iterations == 0)
                     {
-                        controller.SetLEDState(this.light, lowIntensity);
+                        controller.SetLEDState(this.light, this.lightStates[0].Item1);
                         return true;
                     }
                     // Change LED state
                     if (!controller.GetButtonState((int)button))
                     {
-                        this.lightLevel = !this.lightLevel;
-                        if (lightLevel)
+                        this.lightLevel++;
+                        if (this.lightLevel >= this.lightStates.Count)
                         {
-                            // Use high values
-                            controller.SetLEDState(this.light, this.highLevel);
-                            this.duration = this.highDuration;
+                            this.lightLevel = 0;
                         }
-                        else
-                        {
-                            controller.SetLEDState(this.light, this.lowLevel);
-                            this.duration = this.lowDuration;
-                        }
+                        controller.SetLEDState(this.light, this.lightStates[lightLevel].Item1);
+                        this.duration = this.lightStates[lightLevel].Item2;
                     }
                 }
                 return false;
             }
-            
+
             public void reset()
             {
-                this.duration = lowDuration;
-                controller.SetLEDState(this.light, this.lowLevel);
+                this.duration = this.lightStates[0].Item2;
+                controller.SetLEDState(this.light, this.lightStates[0].Item1);
             }
         }
-        
-		// This gets called once by main program
-		public void Initialize() {
+
+
+        // This gets called once by main program
+        public void Initialize() {
             controller = new SteelBattalionController();
 			controller.Init(refreshRate); // 50 is refresh rate in milliseconds
 
@@ -344,7 +353,12 @@ namespace SBC {
                 kspPath += @"\";
             }
             // Initialize flashing lights
-            sasLight = new FlashingLight(ButtonEnum.CockpitHatch, 8, 500, 12, 500, -1);
+            sasLight = new FlashingLight(ButtonEnum.CockpitHatch, new List<Tuple<int, int>>()
+            {
+                new Tuple<int,int>(8, 500),
+                new Tuple<int,int>(12, 500),
+                // ... etc ...
+            } , -1);
             stagingLight = new FlashingLight(ButtonEnum.Start, 8, 500, 12, 500, -1);
             noStateFileLight = new FlashingLight(ButtonEnum.WeaponConMagazine, 4, 250, 15, 250, -1);
             aimingXWarning = new FlashingLight(ButtonEnum.Comm5, 15, 200, 0, 200, -1);
