@@ -1067,7 +1067,7 @@ namespace SBC {
                         }
                         else if (mapView && functionKeys[offset + i] == SBC.Key.RightBracket)
                         {
-                            controller.AddButtonKeyLightMapping(functionButtons[i], toggle, 15, SBC.Key.BackSlash, true);
+                            controller.AddButtonKeyLightMapping(functionButtons[i], toggle, 15, SBC.Key.BackSpace, true);
                         }
                         else
                         {
