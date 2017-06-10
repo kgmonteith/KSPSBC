@@ -11,6 +11,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Collections.Generic;
 using UnityEngine;
+using KSP.UI.Screens.Flight;
 
 namespace KSPSBC
 {
@@ -32,7 +33,7 @@ namespace KSPSBC
             {"navBall", false},
             {"aeroOverlay", false},
             {"thermalOverlay", false},
-            {"thermalGauges", false},
+            //{"thermalGauges", false},
             {"evaHeadlamp", false},
             {"evaJetpack", false}
         };
@@ -40,6 +41,15 @@ namespace KSPSBC
         public State(string m)
         {
             this.mode = m;
+        }
+
+        public static bool is_navball_active(Vessel v)
+        {
+            if (FlightUIModeController.Instance.navBall.State == "In")
+            {
+                return true;
+            }
+            return false;
         }
 
         public void initVessel(Vessel v)
@@ -67,11 +77,12 @@ namespace KSPSBC
                 this.bools["stageLock"] = InputLockManager.IsLocked(ControlTypes.STAGING);
                 this.bools["stageLock2"] = this.bools["stageLock"]; // oh god i'm so lazy
                 this.bools["aeroOverlay"] = PhysicsGlobals.AeroForceDisplay;
-                this.bools["thermalGauges"] = TemperatureGagueSystem.Instance.showGagues;
+                //this.bools["thermalGauges"] = TemperatureGaugeSystem.Instance.enabled;
                 this.bools["thermalOverlay"] = PhysicsGlobals.ThermalColorsDebug;
-                
+
+
             }
-            this.bools["navBall"] = FlightUIModeController.Instance.navBall.expanded;
+            this.bools["navBall"] = is_navball_active(v);
             this.writeToFile();
         }
 
@@ -125,13 +136,13 @@ namespace KSPSBC
                 v.ActionGroups[KSPActionGroup.Brakes] != state.bools["brakes"] ||
                 v.ActionGroups[KSPActionGroup.RCS] != state.bools["rcs"] ||
                 MapView.MapIsEnabled != state.bools["mapView"] ||
-                FlightUIModeController.Instance.navBall.expanded != state.bools["navBall"] ||
+                State.is_navball_active(v) != state.bools["navBall"] ||
                 InputLockManager.IsLocked(ControlTypes.STAGING) != state.bools["stageLock"] ||
                 PhysicsGlobals.AeroForceDisplay != state.bools["aeroOverlay"] ||
-                TemperatureGagueSystem.Instance.showGagues != state.bools["thermalGauges"] ||
                 PhysicsGlobals.ThermalColorsDebug!= state.bools["thermalOverlay"] ||
                 ((Time.time - state.lastPush) > State.idlePushFrequency))
             {
+                //TemperatureGaugeSystem.Instance.enabled != state.bools["thermalGauges"] ||
                 state.initVessel(v);
             }
             else if (v.isEVA)

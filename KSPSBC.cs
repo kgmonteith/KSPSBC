@@ -159,7 +159,7 @@ namespace SBC {
             {"navBall", ControllerLEDEnum.MapZoomInOut},
             {"aeroOverlay", ControllerLEDEnum.ForecastShootingSystem},
             {"thermalOverlay", ControllerLEDEnum.TankDetach},
-            {"thermalGauges", ControllerLEDEnum.F1},
+            //{"thermalGauges", ControllerLEDEnum.F1},
             {"stageLock2", ControllerLEDEnum.Chaff},
             {"evaHeadlamp", ControllerLEDEnum.Chaff},
             {"evaJetpack", ControllerLEDEnum.MainWeaponControl},
@@ -440,7 +440,7 @@ namespace SBC {
 
             // Simple button bindings
             // Right block
-            controller.AddButtonKeyLightMapping(ButtonEnum.Eject, true, 15, SBC.Key.BackSlash, true);
+            controller.AddButtonKeyLightMapping(ButtonEnum.Eject, true, 15, Microsoft.DirectX.DirectInput.Key.BackSpace, true);
             controller.AddButtonKeyLightMapping(ButtonEnum.CockpitHatch, false, 15, SBC.Key.T, true);
             controller.AddButtonKeyLightMapping(ButtonEnum.Ignition, true, 15, SBC.Key.Z, true);
             controller.AddButtonKeyLightMapping(ButtonEnum.Start, true, 15, SBC.Key.Space, true);
@@ -733,7 +733,7 @@ namespace SBC {
                                     break;
                                 case "aeroOverlay":
                                 case "thermalOverlay":
-                                case "thermalGauges":
+                                //case "thermalGauges":
                                     if (controlMode == ControlMode.flying || controlMode == ControlMode.eva)
                                     {
                                         if (!funcShiftSaved)
@@ -762,10 +762,11 @@ namespace SBC {
                                             {
                                                 functionLights[6].savedState = (bVal) ? baseLineIntensity : lowIntensity;
                                             }
+                                            /*
                                             else if (key.Equals("thermalGauges"))
                                             {
                                                 functionLights[5].savedState = (bVal) ? baseLineIntensity : lowIntensity;
-                                            }
+                                            }*/
                                             /* Think about how to do this better...
                                             else if (key.Equals("brakes"))
                                             {
